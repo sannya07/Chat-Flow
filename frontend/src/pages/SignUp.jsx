@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff,LogIn,Mail } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer,toast } from 'react-toastify';
+import axios from 'axios'
 
 const SignUp = () => {
     const [name,setName]=useState();
@@ -13,6 +14,7 @@ const SignUp = () => {
     const [show,setShow]=useState(false)
     const [show1,setShow1]=useState(false)
     const [loading,setLoading]=useState(false)
+    const navigate = useNavigate();
 
     const postDetails = (pics) => {
   setLoading(true);
@@ -51,8 +53,35 @@ const SignUp = () => {
 };
 
 
-    const handleSubmit=()=>{
-
+    const handleSubmit=async()=>{
+      setLoading(true)
+      if(!name || !email || !password || !confirmPassword){
+        toast.error('Please fill all the Feilds!')
+        setLoading(false)
+        return;
+      }
+      
+      if(password!=confirmPassword){
+        toast.error('Passwords do not match!')
+        return;
+      }
+      try {
+        const config={
+          headers:{
+            "Content-type":"application/json"
+          }
+        }
+        const {data}=await axios.post('/api/user/signup',{name,email,password,pic}
+          ,config
+        )
+        toast.success("registeration successful")
+        localStorage.setItem('userInfo',JSON.stringify(data))
+        setLoading(false)
+        // history.pushState('/chats')
+      } catch (error) {
+        toast.error('Something went wrong')
+        setLoading(false)
+      }
     }
 
   return (
