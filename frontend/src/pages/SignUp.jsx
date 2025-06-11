@@ -77,7 +77,7 @@ const SignUp = () => {
         toast.success("registeration successful")
         localStorage.setItem('userInfo',JSON.stringify(data))
         setLoading(false)
-        // history.pushState('/chats')
+        navigate('/chats')
       } catch (error) {
         toast.error('Something went wrong')
         setLoading(false)

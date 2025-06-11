@@ -33,6 +33,7 @@ const Login = () => {
           config
         )
         toast.success("login successful")
+        navigate('/chats')
         localStorage.setItem("userInfo", JSON.stringify(data))
         setLoading(false)
 
