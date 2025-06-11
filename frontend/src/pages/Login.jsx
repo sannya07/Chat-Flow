@@ -1,10 +1,46 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer,toast } from 'react-toastify';
+import axios from 'axios'
+
+
+
 const Login = () => {
     const[email,setEmail]=useState();
     const[password,setPassword]=useState();
     const [show,setShow]=useState(false);
+    const [loading,setLoading]=useState(false);
+    const navigate=useNavigate()
+
+    const handleSubmit=async()=>{
+      setLoading(true);
+      if(!email || !password){
+        toast.error('Please enter all the details')
+        setLoading(false)
+        return;
+      }
+      try {
+        const config={
+          headers:{
+            'Content-type':'application/json'
+          }
+        }
+
+        const {data}=await axios.post('/api/user/login',
+          {email,password},
+          config
+        )
+        toast.success("login successful")
+        localStorage.setItem("userInfo", JSON.stringify(data))
+        setLoading(false)
+
+      } catch (error) {
+        toast.error('Something went wrong')
+        setLoading(false)
+      }
+    }
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
       {/* Animated background elements */}
@@ -13,7 +49,7 @@ const Login = () => {
         <div className="absolute top-3/4 right-1/4 w-48 h-48 bg-indigo-600/10 rounded-full blur-xl animate-pulse delay-1000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-24 h-24 bg-purple-600/10 rounded-full blur-xl animate-pulse delay-2000"></div>
       </div>
-      
+      <ToastContainer/>
       {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-20 w-1 h-1 bg-gray-400 rounded-full animate-ping"></div>
@@ -53,6 +89,7 @@ const Login = () => {
                   type="email"
                   className="w-full px-4 py-4 bg-gray-900/50 border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
                   placeholder="Enter your email"
+                  value={email}
                   onChange={(e)=>setEmail(e.target.value)}
                 />
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -73,6 +110,7 @@ const Login = () => {
                   type={show?"text":"password"}
                   className="w-full px-4 py-4 bg-gray-900/50 border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
                   placeholder="Enter your password"
+                  value={password}
                   onChange={(e)=>setPassword(e.target.value)}
                 />
                 <button
@@ -86,7 +124,8 @@ const Login = () => {
         
             
             {/* Login Button */}
-            <button className="w-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-violet-600/50">
+            <button className="w-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-violet-600/50"
+            onClick={handleSubmit}>
               <span className="flex items-center justify-center">
                 Sign In
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
