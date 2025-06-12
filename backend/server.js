@@ -5,6 +5,7 @@ const cors=require("cors");
 const {chats}= require("./data/data");
 const connectDB = require("./config/db");
 const userRoutes=require('./routes/userRoutes')
+const chatRoutes=require('./routes/ChatRoutes')
 const{errorHandler,notFound}=require('./middleware/errorMiddleware')
 
 const app=express();
@@ -34,6 +35,8 @@ app.get('/api/chat/:id',(req,res)=>{
     res.send(singlechat);
 })
 app.use('/api/user',userRoutes)
+app.use('/api/chat',chatRoutes)
+
 app.use(notFound)
 app.use(errorHandler)
 const PORT=process.env.PORT || 5000
